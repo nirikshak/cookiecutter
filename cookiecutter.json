@@ -1,0 +1,7 @@
+{
+  "customer_name": "cookiecutter.customer_name",
+  "feed_file_path": "cookiecutter.feed_file_path",
+  "site_key": "cookiecutter.site_key",
+  "secret_key": "cookiecutter.secret_key",
+  "argo_workflow_name": "cookiecutter.argo_workflow_name"
+}

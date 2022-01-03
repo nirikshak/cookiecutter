@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: CronWorkflow
+metadata:
+  name: "{{cookiecutter.argo_workflow_name}}"
+  labels:
+    app: feedconverter
+    job: workflow
+    test_mode: enable
+    deploy_mode: auto
+    suspend_on_deploy: false
+spec:
+  schedule: "52 18 * * *"
+  concurrencyPolicy: "Forbid"
+  startingDeadlineSeconds: 0
+  workflowSpec:
+    entrypoint: "{{cookiecutter.argo_workflow_name}}"
+    podGC:
+      strategy: OnWorkflowSuccess
+    ttlStrategy:
+      secondsAfterCompletion: 10
+      secondsAfterSuccess: 5
+      secondsAfterFailure: 5
+    volumes:
+    - name: ebs
+      persistentVolumeClaim:
+        claimName: efs-claim
+    templates:
+    - name: "{{cookiecutter.argo_workflow_name}}"
+      container:
+        name: "{{cookiecutter.argo_workflow_name}}"
+        image: "012629307706.dkr.ecr.us-east-2.amazonaws.com/unbxd:{{cookiecutter.customer_name}}"
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: ebs
+          mountPath: /mnt/ebs
+        command: ["python", "feed.py", "--unbxd_api_key", "{{cookiecutter.secret_key}}", "--unbxd_site_key", "{{cookiecutter.site_key}}"]

@@ -1,0 +1,22 @@
+FROM python:3.9.7-slim-buster
+ARG GITHUB_TOKEN
+
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /home/cronjob
+
+RUN apt-get update
+RUN apt-get install build-essential libffi-dev libssl-dev rustc curl -y --no-install-recommends
+RUN rm -rf /var/lib/apt/lists/*
+
+ADD ./requirements.txt /home/cronjob
+RUN pip install -r requirements.txt --no-cache-dir --compile
+RUN pip install https://${GITHUB_TOKEN}@github.com/unbxd/pyconversion/archive/refs/tags/0.2.2.tar.gz --no-cache-dir --compile
+
+RUN apt-get purge build-essential libffi-dev libssl-dev rustc -y
+RUN apt-get autoremove -y
+RUN apt-get autoclean
+RUN apt-get clean
+
+ADD ./feed.py /home/cronjob
+ADD ./utils /home/cronjob/utils

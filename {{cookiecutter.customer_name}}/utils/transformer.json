@@ -1,0 +1,10 @@
+{
+  "field_name1":{
+      "name": "transformed_field_name1",
+      "type": "string"
+  },
+  "field_name2":{
+      "name": "transformed_field_name2",
+      "type": "category_path_helper"
+  }
+}
